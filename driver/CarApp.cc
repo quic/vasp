@@ -42,6 +42,7 @@
 #include <vasp/attack/acceleration/Constant.h>
 #include <vasp/attack/acceleration/ConstantOffset.h>
 #include <vasp/attack/acceleration/High.h>
+#include <vasp/attack/acceleration/Low.h>
 #include <vasp/attack/channel/DenialOfService.h>
 #include <vasp/attack/position/self_telemetry/ConstantOffset.h>
 #include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
@@ -220,6 +221,10 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     }
     case attack::kAttackHighAcceleration: {
         attack_ = std::make_unique<acceleration::High>();
+        break;
+    }
+    case attack::kAttackLowAcceleration: {
+        attack_ = std::make_unique<acceleration::Low>();
         break;
     }
     case attack::kAttackConstantAcceleration: {
