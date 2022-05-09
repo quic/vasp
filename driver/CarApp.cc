@@ -596,6 +596,7 @@ void CarApp::onBSM(veins::DemoSafetyMessage* dsm)
             return;
         }
 
+            injectGhostAttack(rvBsm);
         return;
     }
 
