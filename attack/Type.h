@@ -129,6 +129,8 @@ enum Type {
     kAttackRandomSpeedOffset,
     kAttackConstantSpeedOffset,
 
+    // All attack randomly chosen
+    kAttackRandomlySelectedAttack,
     _kAttackMaxValue
 };
 } // namespace attack

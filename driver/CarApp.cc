@@ -142,6 +142,11 @@ void CarApp::initialize(int stage)
         accelerationAttackOffset_ = par("accelerationAttackOffset");
         speedAttackOffset_ = par("speedAttackOffset");
         nDosMessages_ = par("nDosMessages");
+
+        // handle attack type selection if random attack selection
+        if (attackType_ == attack::kAttackRandomlySelectedAttack) {
+            attackType_ = static_cast<int>(uniform(attack::_kAttackMinValue + 1, attack::_kAttackMaxValue + 1));
+        }
     }
 }
 
