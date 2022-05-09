@@ -26,10 +26,13 @@
  * Email: quic_ransari@quicinc.com
  */
 
+#include <CSVWriter.h>
 #include <vasp/driver/CarApp.h>
+#include <vasp/logging/TraceManager.h>
 #include <vasp/messages/BasicSafetyMessage_m.h>
 
 // V2X Applications
+#include <vasp/safetyapps/EEBL.h>
 #include <vasp/safetyapps/IMA.h>
 
 namespace vasp {
@@ -43,10 +46,13 @@ void CarApp::initialize(int stage)
 
     if (stage == 0) {
         bsmData_ = par("bsmData").stdstringValue();
+        simRunID_ = par("runID").stdstringValue();
+        resultDir_ = par("resultDir").stdstringValue();
         mapFile_ = par("mapFile").stdstringValue();
     }
 
     if (stage == 1) {
+        traceManager_ = veins::FindModule<logging::TraceManager*>::findGlobalModule();
 
         // Load MAP
         std::ifstream mapFileStream{mapFile_};
@@ -149,11 +155,30 @@ void CarApp::onBSM(veins::DemoSafetyMessage* dsm)
         return;
     }
 
+    simtime_t const rvBsmReceiveTime{simTime()};
     executeV2XApplications(rvBsm);
+    writeTrace(rvBsm, rvBsmReceiveTime);
+}
+
+void CarApp::writeTrace(veins::BasicSafetyMessage const* rvBsm, simtime_t_cref rvBsmReceiveTime)
+{
+    auto hvBsm = std::make_unique<veins::BasicSafetyMessage>();
+    populateWSM(hvBsm.get());
+
+    traceManager_->logTrace(rvBsm, hvBsm.get(), rvBsmReceiveTime, eeblWarning_, imaWarning_);
 }
 
 void CarApp::executeV2XApplications(veins::BasicSafetyMessage const* rvBsm)
 {
+    // EEBL
+    vasp::safetyapps::EEBL eebl{};
+    eeblWarning_ = eebl.warning(
+        rvBsm,
+        mobility->getPositionAt(simTime()),
+        mobility->getHeading(),
+        mobility->getHostSpeed(),
+        myId);
+
     // IMA
     vasp::safetyapps::IMA ima{};
     imaWarning_ = approachingIntersection_ ? ima.warning(curPosition, curSpeed, rvBsm, junctionPos_) : false;

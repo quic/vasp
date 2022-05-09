@@ -30,8 +30,17 @@
 
 #include <json.h>
 #include <memory>
+#include <omnetpp/simtime_t.h>
 #include <string>
 #include <veins/modules/application/ieee80211p/DemoBaseApplLayer.h>
+
+// forward declarations
+
+namespace vasp {
+namespace logging {
+class TraceManager;
+} // namespace logging
+} // namespace vasp
 
 using json = nlohmann::json;
 
@@ -53,10 +62,15 @@ protected:
     void populateWSM(veins::BaseFrame1609_4* wsm, veins::LAddress::L2Type rcvId = veins::LAddress::L2BROADCAST(), int serial = 0) override;
 
 private:
+    void writeTrace(veins::BasicSafetyMessage const* rvBsm, simtime_t_cref rvBsmReceiveTime);
     void runIMA();
     void executeV2XApplications(veins::BasicSafetyMessage const* rvBsm);
 
 private:
+    vasp::logging::TraceManager* traceManager_;
+
+    std::string resultDir_;
+    std::string simRunID_;
     std::string bsmData_;
 
     // IMA related
@@ -65,6 +79,11 @@ private:
     veins::Coord junctionPos_;
     std::string mapFile_;
     json mapJson_;
+
+
+    // V2X apps related
+    bool eeblWarning_{};
+    bool imaWarning_{};
 
     // yaw-rate calculation related
     simtime_t prevBeaconTime_{-1};
