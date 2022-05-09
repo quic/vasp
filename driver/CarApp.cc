@@ -29,6 +29,9 @@
 #include <vasp/driver/CarApp.h>
 #include <vasp/messages/BasicSafetyMessage_m.h>
 
+// V2X Applications
+#include <vasp/safetyapps/IMA.h>
+
 namespace vasp {
 namespace driver {
 
@@ -145,6 +148,15 @@ void CarApp::onBSM(veins::DemoSafetyMessage* dsm)
     if (rvBsm == nullptr) {
         return;
     }
+
+    executeV2XApplications(rvBsm);
+}
+
+void CarApp::executeV2XApplications(veins::BasicSafetyMessage const* rvBsm)
+{
+    // IMA
+    vasp::safetyapps::IMA ima{};
+    imaWarning_ = approachingIntersection_ ? ima.warning(curPosition, curSpeed, rvBsm, junctionPos_) : false;
 }
 
 void CarApp::runIMA()

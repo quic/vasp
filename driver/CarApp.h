@@ -54,6 +54,7 @@ protected:
 
 private:
     void runIMA();
+    void executeV2XApplications(veins::BasicSafetyMessage const* rvBsm);
 
 private:
     std::string bsmData_;
