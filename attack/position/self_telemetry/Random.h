@@ -28,16 +28,24 @@
 
 #pragma once
 
+#include <vasp/attack/Interface.h>
+
+// forward declarations
+namespace veins {
+class BaseWorldUtility;
+} // namespace veins
+
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace position {
+class Random final : public Interface {
+public:
+    Random(veins::BaseWorldUtility* world);
+    void attack(veins::BasicSafetyMessage* bsm) override;
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    _kAttackMaxValue
+private:
+    veins::Coord randomPosition_{};
 };
+} // namespace position
 } // namespace attack
 } // namespace vasp
