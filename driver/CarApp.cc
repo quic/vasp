@@ -51,6 +51,7 @@
 #include <vasp/attack/position/self_telemetry/Random.h>
 #include <vasp/attack/position/self_telemetry/RandomOffset.h>
 #include <vasp/attack/position/self_telemetry/SuddenDisappearance.h>
+#include <vasp/attack/safetyapp/ima/PositionOffset.h>
 
 namespace vasp {
 namespace driver {
@@ -219,6 +220,10 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     }
     case attack::kAttackDenialOfService: {
         attack_ = std::make_unique<channel::DenialOfService>(beaconInterval, nDosMessages_);
+        break;
+    }
+    case attack::kAttackIMAPosOffset: {
+        attack_ = std::make_unique<safetyapp::ima::PositionOffset>(approachingIntersection_);
         break;
     }
     case attack::kAttackHighAcceleration: {
