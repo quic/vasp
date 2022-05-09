@@ -35,4 +35,7 @@ simple CarApp extends DemoBaseApplLayer
         @display("i=block/app2");
         @class(vasp::driver::CarApp);
 
+        string mapFile;
+
+        string bsmData = default("genuine"); // gives knowledge of car type on receiving a BSM
 }

@@ -28,7 +28,12 @@
 
 #pragma once
 
+#include <json.h>
+#include <memory>
+#include <string>
 #include <veins/modules/application/ieee80211p/DemoBaseApplLayer.h>
+
+using json = nlohmann::json;
 
 namespace veins {
 class BasicSafetyMessage;
@@ -48,7 +53,17 @@ protected:
     void populateWSM(veins::BaseFrame1609_4* wsm, veins::LAddress::L2Type rcvId = veins::LAddress::L2BROADCAST(), int serial = 0) override;
 
 private:
+    void runIMA();
+
+private:
     std::string bsmData_;
+
+    // IMA related
+    std::shared_ptr<cMessage> runIMA_{nullptr};
+    bool approachingIntersection_{false};
+    veins::Coord junctionPos_;
+    std::string mapFile_;
+    json mapJson_;
 
     // yaw-rate calculation related
     simtime_t prevBeaconTime_{-1};

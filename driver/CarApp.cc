@@ -40,16 +40,42 @@ void CarApp::initialize(int stage)
 
     if (stage == 0) {
         bsmData_ = par("bsmData").stdstringValue();
+        mapFile_ = par("mapFile").stdstringValue();
+    }
+
+    if (stage == 1) {
+
+        // Load MAP
+        std::ifstream mapFileStream{mapFile_};
+        std::stringstream buffer{};
+        if (mapFileStream) {
+            buffer << mapFileStream.rdbuf();
+            mapFileStream.close();
+        }
+        else {
+            std::string errorMsg = "Unable to open map JSON file: \"" + mapFile_ + "\"";
+            throw cRuntimeError(errorMsg.c_str());
+        }
+        mapJson_ = json::parse(buffer);
+
+        // start IMA
+        runIMA_ = std::make_shared<cMessage>("runIMA");
+        scheduleAt(simTime() + 2, runIMA_.get());
     }
 }
 
 void CarApp::finish()
 {
     DemoBaseApplLayer::finish();
+    cancelEvent(runIMA_.get());
 }
 
 void CarApp::handleSelfMsg(cMessage* msg)
 {
+    if (msg == runIMA_.get()) {
+        runIMA();
+        scheduleAt(simTime() + 2, runIMA_.get());
+    }
 
     if (msg == sendBeaconEvt) {
         veins::BasicSafetyMessage* hvBsm = new veins::BasicSafetyMessage();
@@ -118,6 +144,22 @@ void CarApp::onBSM(veins::DemoSafetyMessage* dsm)
     auto rvBsm = dynamic_cast<veins::BasicSafetyMessage*>(dsm);
     if (rvBsm == nullptr) {
         return;
+    }
+}
+
+void CarApp::runIMA()
+{
+    auto currentRoad = mobility->getRoadId();
+
+    for (auto& roadObj : mapJson_["roads"]) {
+        auto road = roadObj["road"];
+        // check if approaching an intersection
+        approachingIntersection_ = road["id"] == currentRoad;
+        if (approachingIntersection_) {
+            // find junctionPos
+            auto junction = road["junction"];
+            junctionPos_ = veins::Coord(junction["x"], junction["y"]);
+        }
     }
 }
 
