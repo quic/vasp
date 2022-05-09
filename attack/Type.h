@@ -32,6 +32,8 @@ namespace vasp {
 namespace attack {
 enum Type {
     _kAttackMinValue = -1,
+    // No attacks
+    kAttackNo,
     _kAttackMaxValue
 };
 } // namespace attack
