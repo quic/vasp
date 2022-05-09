@@ -40,6 +40,7 @@
 #include <vasp/attack/Type.h>
 // self telemetry based attacks
 #include <vasp/attack/acceleration/Constant.h>
+#include <vasp/attack/acceleration/ConstantOffset.h>
 #include <vasp/attack/channel/DenialOfService.h>
 #include <vasp/attack/position/self_telemetry/ConstantOffset.h>
 #include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
@@ -93,6 +94,7 @@ void CarApp::initialize(int stage)
             return;
         }
         posAttackOffset_ = par("posAttackOffset");
+        accelerationAttackOffset_ = par("accelerationAttackOffset");
         nDosMessages_ = par("nDosMessages");
     }
 }
@@ -217,6 +219,10 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     }
     case attack::kAttackConstantAcceleration: {
         attack_ = std::make_unique<acceleration::Constant>();
+        break;
+    }
+    case attack::kAttackConstantAccelerationOffset: {
+        attack_ = std::make_unique<acceleration::ConstantOffset>(accelerationAttackOffset_);
         break;
     }
     }

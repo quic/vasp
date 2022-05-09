@@ -26,29 +26,22 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/acceleration/ConstantOffset.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace acceleration {
+ConstantOffset::ConstantOffset(double const offset)
+    : offset_(offset)
+{
+}
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-
-    // Channel attacks
-    kAttackDenialOfService,
-
-    // Acceleration attacks
-    kAttackConstantAcceleration,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
-};
+void ConstantOffset::attack(veins::BasicSafetyMessage* bsm)
+{
+    bsm->setAttackType("ConstantAccelerationOffset");
+    bsm->setAcceleration(bsm->getAcceleration() + offset_);
+}
+} // namespace acceleration
 } // namespace attack
 } // namespace vasp

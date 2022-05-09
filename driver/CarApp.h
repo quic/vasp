@@ -98,6 +98,7 @@ private:
     double maliciousProbability_;
     bool isMalicious_;
     double posAttackOffset_{};
+    double accelerationAttackOffset_{};
 
     // V2X apps related
     bool eeblWarning_{};
