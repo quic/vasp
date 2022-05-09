@@ -26,20 +26,24 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/position/self_telemetry/ConstantOffset.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace position {
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    _kAttackMaxValue
-};
+ConstantOffset::ConstantOffset(double const offset)
+    : offset_(offset)
+{
+}
+
+void ConstantOffset::attack(veins::BasicSafetyMessage* bsm)
+{
+    bsm->setAttackType("ConstantOffset");
+    bsm->setSenderPos(bsm->getSenderPos() + veins::Coord(offset_, offset_));
+}
+
+} // namespace position
 } // namespace attack
 } // namespace vasp
