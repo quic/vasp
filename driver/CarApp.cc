@@ -39,6 +39,7 @@
 // attacks
 #include <vasp/attack/Type.h>
 #include <vasp/attack/dimension/Type.h>
+#include <vasp/attack/heading/Type.h>
 // self telemetry based attacks
 #include <vasp/attack/acceleration/Constant.h>
 #include <vasp/attack/acceleration/ConstantOffset.h>
@@ -53,6 +54,15 @@
 #include <vasp/attack/dimension/Low.h>
 #include <vasp/attack/dimension/Random.h>
 #include <vasp/attack/dimension/RandomOffset.h>
+#include <vasp/attack/heading/Constant.h>
+#include <vasp/attack/heading/ConstantOffset.h>
+#include <vasp/attack/heading/High.h>
+#include <vasp/attack/heading/Low.h>
+#include <vasp/attack/heading/Opposite.h>
+#include <vasp/attack/heading/Perpendicular.h>
+#include <vasp/attack/heading/Random.h>
+#include <vasp/attack/heading/RandomOffset.h>
+#include <vasp/attack/heading/Rotating.h>
 #include <vasp/attack/position/self_telemetry/ConstantOffset.h>
 #include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
 #include <vasp/attack/position/self_telemetry/Random.h>
@@ -111,6 +121,9 @@ void CarApp::initialize(int stage)
             return;
         }
         posAttackOffset_ = par("posAttackOffset");
+        dimensionAttackOffset_ = par("dimensionAttackOffset");
+        headingAttackOffset_ = par("headingAttackOffset");
+        yawRateAttackOffset_ = par("yawRateAttackOffset");
         accelerationAttackOffset_ = par("accelerationAttackOffset");
         nDosMessages_ = par("nDosMessages");
     }
@@ -367,6 +380,135 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
         auto badRatioWidth = std::make_unique<dimension::BadRatio>();
         badRatioWidth->setType(dimension::kDimensionAttackTypeWidth);
         attack_ = std::move(badRatioWidth);
+        break;
+    }
+    // Heading attacks
+    case attack::kAttackOppositeHeading: {
+        attack_ = std::make_unique<heading::Opposite>();
+        break;
+    }
+    case attack::kAttackPerpendicularHeading: {
+        attack_ = std::make_unique<heading::Perpendicular>();
+        break;
+    }
+    case attack::kAttackRotatingHeading: {
+        attack_ = std::make_unique<heading::Rotating>();
+        break;
+    }
+    case attack::kAttackConstantHeading: {
+        auto constantHeading = std::make_unique<heading::Constant>();
+        constantHeading->setType(heading::kHyraTypeHeading);
+        constantHeading->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(constantHeading);
+        break;
+    }
+    case attack::kAttackRandomHeading: {
+        auto randomHeading = std::make_unique<heading::Random>();
+        randomHeading->setType(heading::kHyraTypeHeading);
+        randomHeading->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(randomHeading);
+        break;
+    }
+    case attack::kAttackRandomHeadingOffset: {
+        auto randomHeadingOffset = std::make_unique<heading::RandomOffset>();
+        randomHeadingOffset->setType(heading::kHyraTypeHeading);
+        randomHeadingOffset->update(yawRateAttackOffset_, prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(randomHeadingOffset);
+        break;
+    }
+    case attack::kAttackConstantHeadingOffset: {
+        auto constantHeadingOffset = std::make_unique<heading::ConstantOffset>();
+        constantHeadingOffset->setType(heading::kHyraTypeHeading);
+        constantHeadingOffset->update(yawRateAttackOffset_, prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(constantHeadingOffset);
+        break;
+    }
+
+    // Yaw-rate attacks
+    case attack::kAttackHighYawRate: {
+        auto highYawRate = std::make_unique<heading::High>();
+        highYawRate->setType(heading::kHyraTypeYawRate);
+        highYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(highYawRate);
+        break;
+    }
+    case attack::kAttackLowYawRate: {
+        auto lowYawRate = std::make_unique<heading::Low>();
+        lowYawRate->setType(heading::kHyraTypeYawRate);
+        lowYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(lowYawRate);
+        break;
+    }
+    case attack::kAttackConstantYawRate: {
+        auto constantYawRate = std::make_unique<heading::Constant>();
+        constantYawRate->setType(heading::kHyraTypeYawRate);
+        constantYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(constantYawRate);
+        break;
+    }
+    case attack::kAttackRandomYawRate: {
+        auto randomYawRate = std::make_unique<heading::Random>();
+        randomYawRate->setType(heading::kHyraTypeYawRate);
+        randomYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(randomYawRate);
+        break;
+    }
+    case attack::kAttackRandomYawRateOffset: {
+        auto randomYawRateOffset = std::make_unique<heading::RandomOffset>();
+        randomYawRateOffset->setType(heading::kHyraTypeYawRate);
+        randomYawRateOffset->update(yawRateAttackOffset_, prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(randomYawRateOffset);
+        break;
+    }
+    case attack::kAttackConstantYawRateOffset: {
+        auto constantYawRateOffset = std::make_unique<heading::ConstantOffset>();
+        constantYawRateOffset->setType(heading::kHyraTypeYawRate);
+        constantYawRateOffset->update(yawRateAttackOffset_, prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(constantYawRateOffset);
+        break;
+    }
+
+    // Heading and Yaw-rate matching attacks
+    case attack::kAttackHighHeadingYawRate: {
+        auto highHeadingYawRate = std::make_unique<heading::High>();
+        highHeadingYawRate->setType(heading::kHyraTypeBoth);
+        highHeadingYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(highHeadingYawRate);
+        break;
+    }
+    case attack::kAttackLowHeadingYawRate: {
+        auto lowHeadingYawRate = std::make_unique<heading::Low>();
+        lowHeadingYawRate->setType(heading::kHyraTypeBoth);
+        lowHeadingYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(lowHeadingYawRate);
+        break;
+    }
+    case attack::kAttackConstantHeadingYawRate: {
+        auto constantHeadingYawRate = std::make_unique<heading::Constant>();
+        constantHeadingYawRate->setType(heading::kHyraTypeBoth);
+        constantHeadingYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(constantHeadingYawRate);
+        break;
+    }
+    case attack::kAttackRandomHeadingYawRate: {
+        auto randomHeadingYawRate = std::make_unique<heading::Random>();
+        randomHeadingYawRate->setType(heading::kHyraTypeBoth);
+        randomHeadingYawRate->update(prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(randomHeadingYawRate);
+        break;
+    }
+    case attack::kAttackRandomHeadingYawRateOffset: {
+        auto randomHeadingYawRateOffset = std::make_unique<heading::RandomOffset>();
+        randomHeadingYawRateOffset->setType(heading::kHyraTypeBoth);
+        randomHeadingYawRateOffset->update(yawRateAttackOffset_, prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(randomHeadingYawRateOffset);
+        break;
+    }
+    case attack::kAttackConstantHeadingYawRateOffset: {
+        auto constantHeadingYawRateOffset = std::make_unique<heading::ConstantOffset>();
+        constantHeadingYawRateOffset->setType(heading::kHyraTypeBoth);
+        constantHeadingYawRateOffset->update(yawRateAttackOffset_, prevHvHeading_, prevBeaconTime_);
+        attack_ = std::move(constantHeadingYawRateOffset);
         break;
     }
     case attack::kAttackHighAcceleration: {

@@ -99,6 +99,8 @@ private:
     bool isMalicious_;
     double posAttackOffset_{};
     double dimensionAttackOffset_{};
+    double headingAttackOffset_{};
+    double yawRateAttackOffset_{};
     double accelerationAttackOffset_{};
 
     // V2X apps related

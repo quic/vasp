@@ -78,6 +78,31 @@ enum Type {
     kAttackConstantWidthOffset,
     kAttackBadRatioWidth,
 
+    // Heading attacks
+    kAttackOppositeHeading,
+    kAttackPerpendicularHeading,
+    kAttackRotatingHeading,
+    kAttackConstantHeading,
+    kAttackRandomHeading,
+    kAttackRandomHeadingOffset,
+    kAttackConstantHeadingOffset,
+
+    // Yaw-rate attacks
+    kAttackHighYawRate,
+    kAttackLowYawRate,
+    kAttackConstantYawRate,
+    kAttackRandomYawRate,
+    kAttackRandomYawRateOffset,
+    kAttackConstantYawRateOffset,
+
+    // Heading and Yaw-rate matching attacks
+    kAttackHighHeadingYawRate,
+    kAttackLowHeadingYawRate,
+    kAttackConstantHeadingYawRate,
+    kAttackRandomHeadingYawRate,
+    kAttackRandomHeadingYawRateOffset,
+    kAttackConstantHeadingYawRateOffset,
+
     // Acceleration attacks
     kAttackHighAcceleration,
     kAttackLowAcceleration,
