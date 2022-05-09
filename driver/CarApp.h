@@ -30,12 +30,32 @@
 
 #include <veins/modules/application/ieee80211p/DemoBaseApplLayer.h>
 
+namespace veins {
+class BasicSafetyMessage;
+} // namespace veins
+
 namespace vasp {
 namespace driver {
 class CarApp final : public veins::DemoBaseApplLayer {
 public:
     void initialize(int stage) override;
     void finish() override;
+
+protected:
+    void handleSelfMsg(cMessage* msg) override;
+    void handlePositionUpdate(cObject* obj) override;
+    void onBSM(veins::DemoSafetyMessage* dsm) override;
+    void populateWSM(veins::BaseFrame1609_4* wsm, veins::LAddress::L2Type rcvId = veins::LAddress::L2BROADCAST(), int serial = 0) override;
+
+private:
+    std::string bsmData_;
+
+    // yaw-rate calculation related
+    simtime_t prevBeaconTime_{-1};
+    veins::Heading prevHvHeading_{INFINITY};
+    double curYawRate_{-1.0};
+    simtime_t lastUpdate_{-1.0};
+    double lastAngleRad_{-1.0};
 };
 } // namespace driver
 } // namespace vasp
