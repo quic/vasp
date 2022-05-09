@@ -93,6 +93,7 @@ private:
     // attack related
     int attackType_;
     std::shared_ptr<vasp::attack::Interface> attack_{nullptr};
+    int nDosMessages_;
     double sporadicInsertionRate_;
     double maliciousProbability_;
     bool isMalicious_;

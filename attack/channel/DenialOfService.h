@@ -28,23 +28,20 @@
 
 #pragma once
 
+#include <omnetpp/simtime_t.h>
+#include <vasp/attack/Interface.h>
+
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace channel {
+class DenialOfService final : public Interface {
+public:
+    DenialOfService(omnetpp::simtime_t& beaconInterval, int const nDosMessages);
+    void attack(veins::BasicSafetyMessage* bsm) override;
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-
-    // Channel attacks
-    kAttackDenialOfService,
-    _kAttackMaxValue
+private:
+    static bool updateBeaconInterval_;
 };
+} // namespace channel
 } // namespace attack
 } // namespace vasp

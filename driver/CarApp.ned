@@ -43,7 +43,11 @@ simple CarApp extends DemoBaseApplLayer
         string resultDir = default("results");
         string runID;
         string bsmData = default("genuine"); // gives knowledge of car type on receiving a BSM
+
         int attackType = default(0);	// 0 - no attack
+
         int beaconPriority = default(1);
+        int nDosMessages = default(1);
+
         double posAttackOffset @unit(m) = default(10m);
 }

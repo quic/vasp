@@ -39,6 +39,7 @@
 // attacks
 #include <vasp/attack/Type.h>
 // self telemetry based attacks
+#include <vasp/attack/channel/DenialOfService.h>
 #include <vasp/attack/position/self_telemetry/ConstantOffset.h>
 #include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
 #include <vasp/attack/position/self_telemetry/Random.h>
@@ -91,6 +92,7 @@ void CarApp::initialize(int stage)
             return;
         }
         posAttackOffset_ = par("posAttackOffset");
+        nDosMessages_ = par("nDosMessages");
     }
 }
 
@@ -207,6 +209,11 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     case attack::kAttackSuddenDisappearance: {
         attack_ = std::make_unique<position::SuddenDisappearance>();
         break;
+    }
+    case attack::kAttackDenialOfService: {
+        attack_ = std::make_unique<channel::DenialOfService>(beaconInterval, nDosMessages_);
+        break;
+    }
     }
 
     if (attack_) {
