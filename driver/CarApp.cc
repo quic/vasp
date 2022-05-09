@@ -52,6 +52,7 @@
 #include <vasp/attack/position/self_telemetry/RandomOffset.h>
 #include <vasp/attack/position/self_telemetry/SuddenDisappearance.h>
 #include <vasp/attack/safetyapp/ima/HighAcceleration.h>
+#include <vasp/attack/safetyapp/ima/HighSpeed.h>
 #include <vasp/attack/safetyapp/ima/JunctionPosition.h>
 #include <vasp/attack/safetyapp/ima/PositionOffset.h>
 
@@ -230,6 +231,10 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     }
     case attack::kAttackIMAJunctionPos: {
         attack_ = std::make_unique<safetyapp::ima::JunctionPosition>(approachingIntersection_, junctionPos_);
+        break;
+    }
+    case attack::kAttackIMAHighSpeed: {
+        attack_ = std::make_unique<safetyapp::ima::HighSpeed>(approachingIntersection_);
         break;
     }
     case attack::kAttackIMAHighAcceleration: {
