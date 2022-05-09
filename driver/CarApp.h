@@ -37,9 +37,17 @@
 // forward declarations
 
 namespace vasp {
+namespace attack {
+class Interface;
+} // namespace attack
+
 namespace logging {
 class TraceManager;
 } // namespace logging
+
+namespace connection {
+class Manager;
+} // namespace connection
 } // namespace vasp
 
 using json = nlohmann::json;
@@ -65,9 +73,11 @@ private:
     void writeTrace(veins::BasicSafetyMessage const* rvBsm, simtime_t_cref rvBsmReceiveTime);
     void runIMA();
     void executeV2XApplications(veins::BasicSafetyMessage const* rvBsm);
+    void injectAttack(veins::BasicSafetyMessage* bsm);
 
 private:
     vasp::logging::TraceManager* traceManager_;
+    veins::BaseWorldUtility* world_;
 
     std::string resultDir_;
     std::string simRunID_;
@@ -80,6 +90,13 @@ private:
     std::string mapFile_;
     json mapJson_;
 
+    // attack related
+    int attackType_;
+    std::shared_ptr<vasp::attack::Interface> attack_{nullptr};
+    double sporadicInsertionRate_;
+    double maliciousProbability_;
+    bool isMalicious_;
+    double posAttackOffset_{};
 
     // V2X apps related
     bool eeblWarning_{};

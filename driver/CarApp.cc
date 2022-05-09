@@ -27,6 +27,7 @@
  */
 
 #include <CSVWriter.h>
+#include <vasp/connection/Manager.h>
 #include <vasp/driver/CarApp.h>
 #include <vasp/logging/TraceManager.h>
 #include <vasp/messages/BasicSafetyMessage_m.h>
@@ -34,6 +35,15 @@
 // V2X Applications
 #include <vasp/safetyapps/EEBL.h>
 #include <vasp/safetyapps/IMA.h>
+
+// attacks
+#include <vasp/attack/Type.h>
+// self telemetry based attacks
+#include <vasp/attack/position/self_telemetry/ConstantOffset.h>
+#include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
+#include <vasp/attack/position/self_telemetry/Random.h>
+#include <vasp/attack/position/self_telemetry/RandomOffset.h>
+#include <vasp/attack/position/self_telemetry/SuddenDisappearance.h>
 
 namespace vasp {
 namespace driver {
@@ -45,6 +55,8 @@ void CarApp::initialize(int stage)
     DemoBaseApplLayer::initialize(stage);
 
     if (stage == 0) {
+        attackType_ = par("attackType");
+        maliciousProbability_ = attackType_ == attack::kAttackNo ? 0.0 : par("maliciousProbability");
         bsmData_ = par("bsmData").stdstringValue();
         simRunID_ = par("runID").stdstringValue();
         resultDir_ = par("resultDir").stdstringValue();
@@ -52,6 +64,7 @@ void CarApp::initialize(int stage)
     }
 
     if (stage == 1) {
+        world_ = veins::FindModule<veins::BaseWorldUtility*>::findGlobalModule();
         traceManager_ = veins::FindModule<logging::TraceManager*>::findGlobalModule();
 
         // Load MAP
@@ -70,6 +83,14 @@ void CarApp::initialize(int stage)
         // start IMA
         runIMA_ = std::make_shared<cMessage>("runIMA");
         scheduleAt(simTime() + 2, runIMA_.get());
+
+        isMalicious_ = maliciousProbability_ >= dblrand();
+
+        // only initialize attack if malicious
+        if (!isMalicious_) {
+            return;
+        }
+        posAttackOffset_ = par("posAttackOffset");
     }
 }
 
@@ -90,6 +111,15 @@ void CarApp::handleSelfMsg(cMessage* msg)
         veins::BasicSafetyMessage* hvBsm = new veins::BasicSafetyMessage();
         populateWSM(hvBsm);
 
+        if (isMalicious_) {
+                injectAttack(hvBsm);
+
+            prevBeaconTime_ = simTime();
+            if (attackType_ != attack::kAttackSuddenDisappearance) {
+                prevHvHeading_ = hvBsm->getHeading();
+                sendDown(hvBsm);
+            }
+        }
         scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
     }
 
@@ -147,6 +177,42 @@ void CarApp::handlePositionUpdate(cObject* obj)
     lastUpdate_ = simTime();
 }
 
+void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
+{
+    using namespace vasp::attack;
+
+    if (generatedBSMs == 0) {
+        prevHvHeading_ = hvBsm->getHeading();
+    }
+
+    // Select attack according to the attackType_
+    // do nothing if NoAttacks or any one of the ghost attacks is selected
+    switch (attackType_) {
+    case attack::kAttackPlaygroundConstantPosition: {
+        attack_ = std::make_unique<position::PlaygroundConstantPosition>(world_);
+        break;
+    }
+    case attack::kAttackConstantPositionOffset: {
+        attack_ = std::make_unique<position::ConstantOffset>(posAttackOffset_);
+        break;
+    }
+    case attack::kAttackRandomPosition: {
+        attack_ = std::make_unique<position::Random>(world_);
+        break;
+    }
+    case attack::kAttackRandomPositionOffset: {
+        attack_ = std::make_unique<position::RandomOffset>(posAttackOffset_);
+        break;
+    }
+    case attack::kAttackSuddenDisappearance: {
+        attack_ = std::make_unique<position::SuddenDisappearance>();
+        break;
+    }
+
+    if (attack_) {
+        attack_->attack(hvBsm);
+    }
+}
 
 void CarApp::onBSM(veins::DemoSafetyMessage* dsm)
 {

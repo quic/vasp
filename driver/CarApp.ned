@@ -35,7 +35,15 @@ simple CarApp extends DemoBaseApplLayer
         @display("i=block/app2");
         @class(vasp::driver::CarApp);
 
-        string mapFile;
+        double sporadicInsertionRate = default(0.0);
 
+        string mapFile;
+        double maliciousProbability;
+
+        string resultDir = default("results");
+        string runID;
         string bsmData = default("genuine"); // gives knowledge of car type on receiving a BSM
+        int attackType = default(0);	// 0 - no attack
+        int beaconPriority = default(1);
+        double posAttackOffset @unit(m) = default(10m);
 }
