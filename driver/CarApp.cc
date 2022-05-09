@@ -168,6 +168,12 @@ void CarApp::handleSelfMsg(cMessage* msg)
         populateWSM(hvBsm);
 
         if (isMalicious_) {
+            int tmpAttackType{-1};
+            if (attackType_ == attack::kAttackAlwaysRandomAttack) {
+                tmpAttackType = attackType_;
+                attackType_ = static_cast<int>(uniform(attack::_kAttackMinValue + 1, attack::_kAttackMaxValue + 1));
+            }
+
                 injectAttack(hvBsm);
 
             prevBeaconTime_ = simTime();
@@ -175,6 +181,7 @@ void CarApp::handleSelfMsg(cMessage* msg)
                 prevHvHeading_ = hvBsm->getHeading();
                 sendDown(hvBsm);
             }
+            attackType_ = tmpAttackType != -1 ? tmpAttackType : attackType_;
         }
         else {
             sendDown(hvBsm);

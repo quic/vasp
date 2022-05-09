@@ -131,6 +131,8 @@ enum Type {
 
     // All attack randomly chosen
     kAttackRandomlySelectedAttack,
+    kAttackAlwaysRandomAttack,
+
     _kAttackMaxValue
 };
 } // namespace attack
