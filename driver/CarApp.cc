@@ -54,6 +54,8 @@
 #include <vasp/attack/safetyapp/ima/HighAcceleration.h>
 #include <vasp/attack/safetyapp/ima/HighSpeed.h>
 #include <vasp/attack/safetyapp/ima/JunctionPosition.h>
+#include <vasp/attack/safetyapp/ima/LowAcceleration.h>
+#include <vasp/attack/safetyapp/ima/LowSpeed.h>
 #include <vasp/attack/safetyapp/ima/PositionOffset.h>
 
 namespace vasp {
@@ -237,8 +239,16 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
         attack_ = std::make_unique<safetyapp::ima::HighSpeed>(approachingIntersection_);
         break;
     }
+    case attack::kAttackIMALowSpeed: {
+        attack_ = std::make_unique<safetyapp::ima::LowSpeed>(approachingIntersection_);
+        break;
+    }
     case attack::kAttackIMAHighAcceleration: {
         attack_ = std::make_unique<safetyapp::ima::HighAcceleration>(approachingIntersection_);
+        break;
+    }
+    case attack::kAttackIMALowAcceleration: {
+        attack_ = std::make_unique<safetyapp::ima::LowAcceleration>(approachingIntersection_);
         break;
     }
     case attack::kAttackHighAcceleration: {
