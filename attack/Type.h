@@ -42,6 +42,9 @@ enum Type {
     kAttackPlaygroundConstantPosition,
     kAttackSuddenDisappearance,
 
+    // Position attacks (ghost vehicle based)
+    kAttackSuddenAppearance,
+
     // Mobility attacks (ghost vehicle based)
     kAttackCommRangeBraking,
 

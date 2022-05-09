@@ -42,6 +42,7 @@
 #include <vasp/attack/heading/Type.h>
 // ghost vehicle based attacks
 #include <vasp/attack/mobility/CommRangeBraking.h>
+#include <vasp/attack/position/ghost_vehicle/SuddenAppearance.h>
 // self telemetry based attacks
 #include <vasp/attack/acceleration/Constant.h>
 #include <vasp/attack/acceleration/ConstantOffset.h>
@@ -639,6 +640,10 @@ void CarApp::injectGhostAttack(veins::BasicSafetyMessage const* rvBsm)
     setGhostMsgCount(mapKey, ghostBsm);
 
     switch (attackType_) {
+    case attack::kAttackSuddenAppearance: {
+        ghostAttack_ = std::make_unique<position::SuddenAppearance>(rvBsm);
+        break;
+    }
     case attack::kAttackCommRangeBraking: {
         ghostAttack_ = std::make_unique<mobility::CommRangeBraking>(rvBsm, ghostVehicleDistance_, curSpeed);
         break;
