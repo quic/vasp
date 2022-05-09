@@ -110,6 +110,15 @@ enum Type {
     kAttackRandomAcceleration,
     kAttackRandomAccelerationOffset,
     kAttackConstantAccelerationOffset,
+
+    // Speed attacks
+    kAttackHighSpeed,
+    kAttackLowSpeed,
+    kAttackConstantSpeed,
+    kAttackRandomSpeed,
+    kAttackRandomSpeedOffset,
+    kAttackConstantSpeedOffset,
+
     _kAttackMaxValue
 };
 } // namespace attack

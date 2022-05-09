@@ -74,6 +74,12 @@
 #include <vasp/attack/safetyapp/ima/LowAcceleration.h>
 #include <vasp/attack/safetyapp/ima/LowSpeed.h>
 #include <vasp/attack/safetyapp/ima/PositionOffset.h>
+#include <vasp/attack/speed/Constant.h>
+#include <vasp/attack/speed/ConstantOffset.h>
+#include <vasp/attack/speed/High.h>
+#include <vasp/attack/speed/Low.h>
+#include <vasp/attack/speed/Random.h>
+#include <vasp/attack/speed/RandomOffset.h>
 
 namespace vasp {
 namespace driver {
@@ -125,6 +131,7 @@ void CarApp::initialize(int stage)
         headingAttackOffset_ = par("headingAttackOffset");
         yawRateAttackOffset_ = par("yawRateAttackOffset");
         accelerationAttackOffset_ = par("accelerationAttackOffset");
+        speedAttackOffset_ = par("speedAttackOffset");
         nDosMessages_ = par("nDosMessages");
     }
 }
@@ -533,6 +540,30 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     }
     case attack::kAttackConstantAccelerationOffset: {
         attack_ = std::make_unique<acceleration::ConstantOffset>(accelerationAttackOffset_);
+        break;
+    }
+    case attack::kAttackHighSpeed: {
+        attack_ = std::make_unique<speed::High>();
+        break;
+    }
+    case attack::kAttackLowSpeed: {
+        attack_ = std::make_unique<speed::Low>();
+        break;
+    }
+    case attack::kAttackConstantSpeed: {
+        attack_ = std::make_unique<speed::Constant>();
+        break;
+    }
+    case attack::kAttackRandomSpeed: {
+        attack_ = std::make_unique<speed::Random>();
+        break;
+    }
+    case attack::kAttackRandomSpeedOffset: {
+        attack_ = std::make_unique<speed::RandomOffset>(speedAttackOffset_);
+        break;
+    }
+    case attack::kAttackConstantSpeedOffset: {
+        attack_ = std::make_unique<speed::ConstantOffset>(speedAttackOffset_);
         break;
     }
     }

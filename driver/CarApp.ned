@@ -54,4 +54,5 @@ simple CarApp extends DemoBaseApplLayer
         double headingAttackOffset @unit(rad) = default(0.5235987756rad);
         double yawRateAttackOffset = default(4);
         double accelerationAttackOffset = default(2);
+        double speedAttackOffset @unit(mps) = default(10mps);
 }

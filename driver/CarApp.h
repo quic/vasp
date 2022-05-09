@@ -102,6 +102,7 @@ private:
     double headingAttackOffset_{};
     double yawRateAttackOffset_{};
     double accelerationAttackOffset_{};
+    double speedAttackOffset_{};
 
     // V2X apps related
     bool eeblWarning_{};
