@@ -162,6 +162,9 @@ void CarApp::handleSelfMsg(cMessage* msg)
                 sendDown(hvBsm);
             }
         }
+        else {
+            sendDown(hvBsm);
+        }
         scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
     }
 
