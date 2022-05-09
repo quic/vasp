@@ -26,50 +26,33 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/dimension/Interface.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
-
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-
-    // Channel attacks
-    kAttackDenialOfService,
-
-
-    // IMA-specific attacks
-    kAttackIMAPosOffset,
-    kAttackIMAJunctionPos,
-    kAttackIMAHighSpeed,
-    kAttackIMALowSpeed,
-    kAttackIMAHighAcceleration,
-    kAttackIMALowAcceleration,
-
-    // Dimension attacks
-    kAttackHighDimension,
-    kAttackLowDimension,
-    kAttackRandomDimension,
-    kAttackRandomDimensionOffset,
-    kAttackConstantDimensionOffset,
-    kAttackBadRatioDimension,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackLowAcceleration,
-    kAttackConstantAcceleration,
-    kAttackRandomAcceleration,
-    kAttackRandomAccelerationOffset,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
-};
+namespace dimension {
+void Interface::setParams(veins::BasicSafetyMessage* bsm, std::string const& str, double const length, double const width)
+{
+    switch (type_) {
+    case kDimensionAttackTypeLength: {
+        bsm->setAttackType((str + "Length").c_str());
+        bsm->setLength(length);
+        break;
+    }
+    case kDimensionAttackTypeWidth: {
+        bsm->setAttackType((str + "Width").c_str());
+        bsm->setWidth(width);
+        break;
+    }
+    case kDimensionAttackTypeBoth: {
+        bsm->setAttackType((str + "Dimension").c_str());
+        bsm->setLength(length);
+        bsm->setWidth(width);
+        break;
+    }
+    }
+}
+} // namespace dimension
 } // namespace attack
 } // namespace vasp

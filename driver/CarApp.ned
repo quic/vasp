@@ -50,5 +50,6 @@ simple CarApp extends DemoBaseApplLayer
         int nDosMessages = default(1);
 
         double posAttackOffset @unit(m) = default(10m);
+        double dimensionAttackOffset @unit(m) = default(4m);
         double accelerationAttackOffset = default(2);
 }

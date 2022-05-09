@@ -38,6 +38,7 @@
 
 // attacks
 #include <vasp/attack/Type.h>
+#include <vasp/attack/dimension/Type.h>
 // self telemetry based attacks
 #include <vasp/attack/acceleration/Constant.h>
 #include <vasp/attack/acceleration/ConstantOffset.h>
@@ -46,6 +47,12 @@
 #include <vasp/attack/acceleration/Random.h>
 #include <vasp/attack/acceleration/RandomOffset.h>
 #include <vasp/attack/channel/DenialOfService.h>
+#include <vasp/attack/dimension/BadRatio.h>
+#include <vasp/attack/dimension/ConstantOffset.h>
+#include <vasp/attack/dimension/High.h>
+#include <vasp/attack/dimension/Low.h>
+#include <vasp/attack/dimension/Random.h>
+#include <vasp/attack/dimension/RandomOffset.h>
 #include <vasp/attack/position/self_telemetry/ConstantOffset.h>
 #include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
 #include <vasp/attack/position/self_telemetry/Random.h>
@@ -249,6 +256,43 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     }
     case attack::kAttackIMALowAcceleration: {
         attack_ = std::make_unique<safetyapp::ima::LowAcceleration>(approachingIntersection_);
+        break;
+    }
+    // Dimension attacks
+    case attack::kAttackHighDimension: {
+        auto highDimension = std::make_unique<dimension::High>();
+        highDimension->setType(dimension::kDimensionAttackTypeBoth);
+        attack_ = std::move(highDimension);
+        break;
+    }
+    case attack::kAttackLowDimension: {
+        auto lowDimension = std::make_unique<dimension::Low>();
+        lowDimension->setType(dimension::kDimensionAttackTypeBoth);
+        attack_ = std::move(lowDimension);
+        break;
+    }
+    case attack::kAttackRandomDimension: {
+        auto randomDimension = std::make_unique<dimension::Random>();
+        randomDimension->setType(dimension::kDimensionAttackTypeBoth);
+        attack_ = std::move(randomDimension);
+        break;
+    }
+    case attack::kAttackRandomDimensionOffset: {
+        auto randomDimensionOffset = std::make_unique<dimension::RandomOffset>();
+        randomDimensionOffset->setType(dimension::kDimensionAttackTypeBoth);
+        attack_ = std::move(randomDimensionOffset);
+        break;
+    }
+    case attack::kAttackConstantDimensionOffset: {
+        auto constantDimensionOffset = std::make_unique<dimension::ConstantOffset>();
+        constantDimensionOffset->setType(dimension::kDimensionAttackTypeBoth);
+        attack_ = std::move(constantDimensionOffset);
+        break;
+    }
+    case attack::kAttackBadRatioDimension: {
+        auto badRatioDimension = std::make_unique<dimension::BadRatio>();
+        badRatioDimension->setType(dimension::kDimensionAttackTypeBoth);
+        attack_ = std::move(badRatioDimension);
         break;
     }
     case attack::kAttackHighAcceleration: {

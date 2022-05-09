@@ -26,50 +26,26 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/dimension/ConstantOffset.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace dimension {
+void ConstantOffset::update(double const offset)
+{
+    offset_ = offset;
+}
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
+void ConstantOffset::attack(veins::BasicSafetyMessage* bsm)
+{
+    // plausible length range: [0.1, 102.2]m [ETSI TS 102 894-2]
+    // plausible width range: [0.1, 6.1]m [ETSI TS 102 894-2]
+    double const kLength{bsm->getLength() + offset_};
+    double const kWidth{bsm->getWidth() + offset_};
 
-    // Channel attacks
-    kAttackDenialOfService,
-
-
-    // IMA-specific attacks
-    kAttackIMAPosOffset,
-    kAttackIMAJunctionPos,
-    kAttackIMAHighSpeed,
-    kAttackIMALowSpeed,
-    kAttackIMAHighAcceleration,
-    kAttackIMALowAcceleration,
-
-    // Dimension attacks
-    kAttackHighDimension,
-    kAttackLowDimension,
-    kAttackRandomDimension,
-    kAttackRandomDimensionOffset,
-    kAttackConstantDimensionOffset,
-    kAttackBadRatioDimension,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackLowAcceleration,
-    kAttackConstantAcceleration,
-    kAttackRandomAcceleration,
-    kAttackRandomAccelerationOffset,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
-};
+    setParams(bsm, "ConstantOffset", kLength, kWidth);
+}
+} // namespace dimension
 } // namespace attack
 } // namespace vasp

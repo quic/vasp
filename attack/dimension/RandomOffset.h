@@ -28,48 +28,19 @@
 
 #pragma once
 
+#include <vasp/attack/dimension/Interface.h>
+
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace dimension {
+class RandomOffset final : public Interface {
+public:
+    void update(double const offset);
+    void attack(veins::BasicSafetyMessage* bsm) override;
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-
-    // Channel attacks
-    kAttackDenialOfService,
-
-
-    // IMA-specific attacks
-    kAttackIMAPosOffset,
-    kAttackIMAJunctionPos,
-    kAttackIMAHighSpeed,
-    kAttackIMALowSpeed,
-    kAttackIMAHighAcceleration,
-    kAttackIMALowAcceleration,
-
-    // Dimension attacks
-    kAttackHighDimension,
-    kAttackLowDimension,
-    kAttackRandomDimension,
-    kAttackRandomDimensionOffset,
-    kAttackConstantDimensionOffset,
-    kAttackBadRatioDimension,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackLowAcceleration,
-    kAttackConstantAcceleration,
-    kAttackRandomAcceleration,
-    kAttackRandomAccelerationOffset,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
+private:
+    double offset_;
 };
+} // namespace dimension
 } // namespace attack
 } // namespace vasp
