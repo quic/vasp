@@ -28,17 +28,19 @@
 
 #pragma once
 
+#include <vasp/attack/Interface.h>
+
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace position {
+class RandomOffset final : public Interface {
+public:
+    RandomOffset(double const offset);
+    void attack(veins::BasicSafetyMessage* bsm) override;
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    _kAttackMaxValue
+private:
+    double offset_;
 };
+} // namespace position
 } // namespace attack
 } // namespace vasp
