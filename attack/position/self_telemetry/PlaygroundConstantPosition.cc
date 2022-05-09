@@ -26,21 +26,25 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <veins/base/modules/BaseWorldUtility.h>
+#include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace position {
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    _kAttackMaxValue
-};
+PlaygroundConstantPosition::PlaygroundConstantPosition(veins::BaseWorldUtility* world)
+    : playgroundSize_(*(world->getPgs()))
+{
+}
+
+void PlaygroundConstantPosition::attack(veins::BasicSafetyMessage* bsm)
+{
+    bsm->setAttackType("PlaygroundConstantPosition");
+    bsm->setSenderPos(playgroundSize_ / 2);
+}
+
+} // namespace position
 } // namespace attack
 } // namespace vasp
