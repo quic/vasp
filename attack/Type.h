@@ -52,6 +52,8 @@ enum Type {
     // Channel attacks
     kAttackDenialOfService,
 
+    // EEBL-specific attacks (ghost vehicle based)
+    kAttackFakeEEBLJustAttack,
 
     // IMA-specific attacks
     kAttackIMAPosOffset,
