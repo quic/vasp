@@ -28,6 +28,8 @@
 
 #pragma once
 
+#include <veins/modules/application/ieee80211p/DemoBaseApplLayer.h>
+
 namespace vasp {
 namespace driver {
 class CarApp final : public veins::DemoBaseApplLayer {
