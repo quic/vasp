@@ -28,36 +28,22 @@
 
 #pragma once
 
+#include <vasp/attack/safetyapp/ima/Interface.h>
+#include <veins/base/utils/Coord.h>
+
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace safetyapp {
+namespace ima {
+class JunctionPosition final : public Interface {
+public:
+    JunctionPosition(bool const approachingIntersection, veins::Coord const& junctionPos);
+    void attack(veins::BasicSafetyMessage* bsm) override;
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-
-    // Channel attacks
-    kAttackDenialOfService,
-
-
-    // IMA-specific attacks
-    kAttackIMAPosOffset,
-    kAttackIMAJunctionPos,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackLowAcceleration,
-    kAttackConstantAcceleration,
-    kAttackRandomAcceleration,
-    kAttackRandomAccelerationOffset,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
+private:
+    veins::Coord junctionPos_{};
 };
+} // namespace ima
+} // namespace safetyapp
 } // namespace attack
 } // namespace vasp

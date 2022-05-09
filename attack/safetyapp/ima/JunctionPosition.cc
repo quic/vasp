@@ -26,38 +26,29 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/safetyapp/ima/JunctionPosition.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace safetyapp {
+namespace ima {
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
+JunctionPosition::JunctionPosition(bool const approachingIntersection, veins::Coord const& junctionPos)
+    : junctionPos_(junctionPos)
+{
+    approachingIntersection_ = approachingIntersection;
+}
 
-    // Channel attacks
-    kAttackDenialOfService,
+void JunctionPosition::attack(veins::BasicSafetyMessage* bsm)
+{
+    if (approachingIntersection_) {
+        bsm->setAttackType("JunctionPosition");
+        bsm->setSenderPos(junctionPos_);
+    }
+}
 
-
-    // IMA-specific attacks
-    kAttackIMAPosOffset,
-    kAttackIMAJunctionPos,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackLowAcceleration,
-    kAttackConstantAcceleration,
-    kAttackRandomAcceleration,
-    kAttackRandomAccelerationOffset,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
-};
+} // namespace ima
+} // namespace safetyapp
 } // namespace attack
 } // namespace vasp
