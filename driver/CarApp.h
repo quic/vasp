@@ -124,6 +124,8 @@ private:
     std::map<std::string, int> ghostMsgCountMap_;
     std::map<std::string, long> ghostRvIdMap_;
     double ghostVehicleDistance_{0.0};
+    veins::Coord ghostPos_;
+    bool targetConstPosAttackFlag_{true};
 };
 } // namespace driver
 } // namespace vasp

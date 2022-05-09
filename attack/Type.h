@@ -44,6 +44,7 @@ enum Type {
 
     // Position attacks (ghost vehicle based)
     kAttackSuddenAppearance,
+    kAttackTargetedConstantPosition,
 
     // Mobility attacks (ghost vehicle based)
     kAttackCommRangeBraking,
