@@ -26,6 +26,7 @@
  * Email: quic_ransari@quicinc.com
  */
 
+#include <vasp/driver/CarApp.h>
 namespace vasp {
 namespace driver {
 
