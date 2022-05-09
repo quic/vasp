@@ -26,22 +26,20 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/position/self_telemetry/SuddenDisappearance.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace position {
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-    _kAttackMaxValue
-};
+void SuddenDisappearance::attack(veins::BasicSafetyMessage* bsm)
+{
+    bsm->setAttackType("SuddenDisappearance");
+    delete bsm;
+    bsm = nullptr;
+}
+
+} // namespace position
 } // namespace attack
 } // namespace vasp
