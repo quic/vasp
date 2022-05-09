@@ -31,5 +31,15 @@ namespace driver {
 
 Define_Module(CarApp);
 
+void CarApp::initialize(int stage)
+{
+    DemoBaseApplLayer::initialize(stage);
+}
+
+void CarApp::finish()
+{
+    DemoBaseApplLayer::finish();
+}
+
 } // namespace driver
 } // namespace vasp

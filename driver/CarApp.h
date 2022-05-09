@@ -31,6 +31,9 @@
 namespace vasp {
 namespace driver {
 class CarApp final : public veins::DemoBaseApplLayer {
+public:
+    void initialize(int stage) override;
+    void finish() override;
 };
 } // namespace driver
 } // namespace vasp
