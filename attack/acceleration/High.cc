@@ -26,30 +26,19 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/acceleration/High.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace acceleration {
+void High::attack(veins::BasicSafetyMessage* bsm)
+{
+    bsm->setAttackType("HighAcceleration");
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-
-    // Channel attacks
-    kAttackDenialOfService,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackConstantAcceleration,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
-};
+    // maximal acceleration as defined in ETSI TS 102 894-2: 16m/s^2
+    bsm->setAcceleration(16.5);
+}
+} // namespace acceleration
 } // namespace attack
 } // namespace vasp

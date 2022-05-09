@@ -41,6 +41,7 @@
 // self telemetry based attacks
 #include <vasp/attack/acceleration/Constant.h>
 #include <vasp/attack/acceleration/ConstantOffset.h>
+#include <vasp/attack/acceleration/High.h>
 #include <vasp/attack/channel/DenialOfService.h>
 #include <vasp/attack/position/self_telemetry/ConstantOffset.h>
 #include <vasp/attack/position/self_telemetry/PlaygroundConstantPosition.h>
@@ -215,6 +216,10 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
     }
     case attack::kAttackDenialOfService: {
         attack_ = std::make_unique<channel::DenialOfService>(beaconInterval, nDosMessages_);
+        break;
+    }
+    case attack::kAttackHighAcceleration: {
+        attack_ = std::make_unique<acceleration::High>();
         break;
     }
     case attack::kAttackConstantAcceleration: {
