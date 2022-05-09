@@ -26,33 +26,26 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <omnetpp/csimulation.h>
+#include <omnetpp/distrib.h>
+#include <vasp/attack/acceleration/RandomOffset.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace acceleration {
+RandomOffset::RandomOffset(double const offset)
+    : offset_(offset)
+{
+}
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
+void RandomOffset::attack(veins::BasicSafetyMessage* bsm)
+{
+    bsm->setAttackType("RandomAccelerationOffset");
 
-    // Channel attacks
-    kAttackDenialOfService,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackLowAcceleration,
-    kAttackConstantAcceleration,
-    kAttackRandomAcceleration,
-    kAttackRandomAccelerationOffset,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
-};
+    auto rng = getEnvir()->getRNG(0);
+    bsm->setAcceleration(bsm->getAcceleration() + uniform(rng, -offset_, offset_));
+}
+} // namespace acceleration
 } // namespace attack
 } // namespace vasp

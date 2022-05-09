@@ -26,33 +26,21 @@
  * Email: quic_ransari@quicinc.com
  */
 
-#pragma once
+#include <vasp/attack/acceleration/Random.h>
+#include <vasp/messages/BasicSafetyMessage_m.h>
+#include <omnetpp/csimulation.h>
+#include <omnetpp/distrib.h>
 
 namespace vasp {
 namespace attack {
-enum Type {
-    _kAttackMinValue = -1,
-    // No attacks
-    kAttackNo,
+namespace acceleration {
+void Random::attack(veins::BasicSafetyMessage* bsm)
+{
+    bsm->setAttackType("RandomAcceleration");
 
-    // Position attacks (self telemetry based)
-    kAttackRandomPosition,
-    kAttackRandomPositionOffset,
-    kAttackConstantPositionOffset,
-    kAttackPlaygroundConstantPosition,
-    kAttackSuddenDisappearance,
-
-    // Channel attacks
-    kAttackDenialOfService,
-
-    // Acceleration attacks
-    kAttackHighAcceleration,
-    kAttackLowAcceleration,
-    kAttackConstantAcceleration,
-    kAttackRandomAcceleration,
-    kAttackRandomAccelerationOffset,
-    kAttackConstantAccelerationOffset,
-    _kAttackMaxValue
-};
+    auto rng = getEnvir()->getRNG(0);
+    bsm->setAcceleration(uniform(rng, -INFINITY, INFINITY));
+}
+} // namespace acceleration
 } // namespace attack
 } // namespace vasp
