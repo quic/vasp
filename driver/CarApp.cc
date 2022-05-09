@@ -135,6 +135,7 @@ void CarApp::initialize(int stage)
         if (!isMalicious_) {
             return;
         }
+        attackPolicy_ = static_cast<attack::AttackPolicy>(par("attackPolicy").intValue());
         posAttackOffset_ = par("posAttackOffset");
         dimensionAttackOffset_ = par("dimensionAttackOffset");
         headingAttackOffset_ = par("headingAttackOffset");
@@ -142,6 +143,14 @@ void CarApp::initialize(int stage)
         accelerationAttackOffset_ = par("accelerationAttackOffset");
         speedAttackOffset_ = par("speedAttackOffset");
         nDosMessages_ = par("nDosMessages");
+
+        // handle random attack insertion
+        sporadicInsertionRate_ = attackPolicy_ == attack::kAttackPolicySporadic ? par("sporadicInsertionRate") : 0.0;
+        if (sporadicInsertionRate_ > 1 or sporadicInsertionRate_ < 0) {
+            std::string const errorMsg{"sporadicInsertionRate should be within range [0, 1]; invalid input: " +
+                std::to_string(sporadicInsertionRate_)};
+            throw cRuntimeError(errorMsg.c_str());
+        }
 
         // handle attack type selection if random attack selection
         if (attackType_ == attack::kAttackRandomlySelectedAttack) {
@@ -174,7 +183,11 @@ void CarApp::handleSelfMsg(cMessage* msg)
                 attackType_ = static_cast<int>(uniform(attack::_kAttackMinValue + 1, attack::_kAttackMaxValue + 1));
             }
 
+            if ((attackPolicy_ == attack::kAttackPolicyPersistent) or // always attack
+                (sporadicInsertionRate_ >= dblrand()) // sporadic attack
+            ) {
                 injectAttack(hvBsm);
+            }
 
             prevBeaconTime_ = simTime();
             if (attackType_ != attack::kAttackSuddenDisappearance) {
@@ -612,7 +625,12 @@ void CarApp::onBSM(veins::DemoSafetyMessage* dsm)
             return;
         }
 
+        if (attackPolicy_ == attack::kAttackPolicyPersistent or // always attack
+            sporadicInsertionRate_ >= dblrand() // sporadic attack
+        ) {
             injectGhostAttack(rvBsm);
+        }
+
         return;
     }
 

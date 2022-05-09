@@ -32,6 +32,7 @@
 #include <memory>
 #include <omnetpp/simtime_t.h>
 #include <string>
+#include <vasp/attack/AttackPolicy.h>
 #include <veins/modules/application/ieee80211p/DemoBaseApplLayer.h>
 
 // forward declarations
@@ -99,6 +100,7 @@ private:
     std::shared_ptr<vasp::attack::Interface> attack_{nullptr};
     std::shared_ptr<vasp::attack::Interface> ghostAttack_{nullptr};
     int nDosMessages_;
+    vasp::attack::AttackPolicy attackPolicy_;
     double sporadicInsertionRate_;
     double maliciousProbability_;
     bool isMalicious_;

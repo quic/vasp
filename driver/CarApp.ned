@@ -35,6 +35,7 @@ simple CarApp extends DemoBaseApplLayer
         @display("i=block/app2");
         @class(vasp::driver::CarApp);
 
+        int    attackPolicy        = default(0); // Persistent = 0, Periodic = 1, Sporadic = 2
         double sporadicInsertionRate = default(0.0);
 
         string mapFile;
