@@ -295,6 +295,80 @@ void CarApp::injectAttack(veins::BasicSafetyMessage* hvBsm)
         attack_ = std::move(badRatioDimension);
         break;
     }
+    // Length attacks
+    case attack::kAttackHighLength: {
+        auto highLength = std::make_unique<dimension::High>();
+        highLength->setType(dimension::kDimensionAttackTypeLength);
+        attack_ = std::move(highLength);
+        break;
+    }
+    case attack::kAttackLowLength: {
+        auto lowLength = std::make_unique<dimension::Low>();
+        lowLength->setType(dimension::kDimensionAttackTypeLength);
+        attack_ = std::move(lowLength);
+        break;
+    }
+    case attack::kAttackRandomLength: {
+        auto randomLength = std::make_unique<dimension::Random>();
+        randomLength->setType(dimension::kDimensionAttackTypeLength);
+        attack_ = std::move(randomLength);
+        break;
+    }
+    case attack::kAttackRandomLengthOffset: {
+        auto randomLengthOffset = std::make_unique<dimension::RandomOffset>();
+        randomLengthOffset->setType(dimension::kDimensionAttackTypeLength);
+        attack_ = std::move(randomLengthOffset);
+        break;
+    }
+    case attack::kAttackConstantLengthOffset: {
+        auto constantLengthOffset = std::make_unique<dimension::ConstantOffset>();
+        constantLengthOffset->setType(dimension::kDimensionAttackTypeLength);
+        attack_ = std::move(constantLengthOffset);
+        break;
+    }
+    case attack::kAttackBadRatioLength: {
+        auto badRatioLength = std::make_unique<dimension::BadRatio>();
+        badRatioLength->setType(dimension::kDimensionAttackTypeLength);
+        attack_ = std::move(badRatioLength);
+        break;
+    }
+    // Width attacks
+    case attack::kAttackHighWidth: {
+        auto highWidth = std::make_unique<dimension::High>();
+        highWidth->setType(dimension::kDimensionAttackTypeWidth);
+        attack_ = std::move(highWidth);
+        break;
+    }
+    case attack::kAttackLowWidth: {
+        auto lowWidth = std::make_unique<dimension::Low>();
+        lowWidth->setType(dimension::kDimensionAttackTypeWidth);
+        attack_ = std::move(lowWidth);
+        break;
+    }
+    case attack::kAttackRandomWidth: {
+        auto randomWidth = std::make_unique<dimension::Random>();
+        randomWidth->setType(dimension::kDimensionAttackTypeWidth);
+        attack_ = std::move(randomWidth);
+        break;
+    }
+    case attack::kAttackRandomWidthOffset: {
+        auto randomWidthOffset = std::make_unique<dimension::RandomOffset>();
+        randomWidthOffset->setType(dimension::kDimensionAttackTypeWidth);
+        attack_ = std::move(randomWidthOffset);
+        break;
+    }
+    case attack::kAttackConstantWidthOffset: {
+        auto constantWidthOffset = std::make_unique<dimension::ConstantOffset>();
+        constantWidthOffset->setType(dimension::kDimensionAttackTypeWidth);
+        attack_ = std::move(constantWidthOffset);
+        break;
+    }
+    case attack::kAttackBadRatioWidth: {
+        auto badRatioWidth = std::make_unique<dimension::BadRatio>();
+        badRatioWidth->setType(dimension::kDimensionAttackTypeWidth);
+        attack_ = std::move(badRatioWidth);
+        break;
+    }
     case attack::kAttackHighAcceleration: {
         attack_ = std::make_unique<acceleration::High>();
         break;

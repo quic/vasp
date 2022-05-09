@@ -62,6 +62,22 @@ enum Type {
     kAttackConstantDimensionOffset,
     kAttackBadRatioDimension,
 
+    // Length attacks
+    kAttackHighLength,
+    kAttackLowLength,
+    kAttackRandomLength,
+    kAttackRandomLengthOffset,
+    kAttackConstantLengthOffset,
+    kAttackBadRatioLength,
+
+    // Width attacks
+    kAttackHighWidth,
+    kAttackLowWidth,
+    kAttackRandomWidth,
+    kAttackRandomWidthOffset,
+    kAttackConstantWidthOffset,
+    kAttackBadRatioWidth,
+
     // Acceleration attacks
     kAttackHighAcceleration,
     kAttackLowAcceleration,
