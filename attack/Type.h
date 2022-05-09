@@ -54,6 +54,7 @@ enum Type {
 
     // EEBL-specific attacks (ghost vehicle based)
     kAttackFakeEEBLJustAttack,
+    kAttackFakeEEBLStopPositionUpdateAfterAttack,
 
     // IMA-specific attacks
     kAttackIMAPosOffset,

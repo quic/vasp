@@ -45,6 +45,7 @@
 #include <vasp/attack/position/ghost_vehicle/SuddenAppearance.h>
 #include <vasp/attack/position/ghost_vehicle/TargetedConstantPosition.h>
 #include <vasp/attack/safetyapp/eebl/JustAttack.h>
+#include <vasp/attack/safetyapp/eebl/StopAfterAttack.h>
 // self telemetry based attacks
 #include <vasp/attack/acceleration/Constant.h>
 #include <vasp/attack/acceleration/ConstantOffset.h>
@@ -656,6 +657,10 @@ void CarApp::injectGhostAttack(veins::BasicSafetyMessage const* rvBsm)
     }
     case attack::kAttackFakeEEBLJustAttack: {
         ghostAttack_ = std::make_unique<safetyapp::eebl::JustAttack>(rvBsm);
+        break;
+    }
+    case attack::kAttackFakeEEBLStopPositionUpdateAfterAttack: {
+        ghostAttack_ = std::make_unique<safetyapp::eebl::StopAfterAttack>(rvBsm);
         break;
     }
     default: {
