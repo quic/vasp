@@ -73,11 +73,15 @@ private:
     void writeTrace(veins::BasicSafetyMessage const* rvBsm, simtime_t_cref rvBsmReceiveTime);
     void runIMA();
     void executeV2XApplications(veins::BasicSafetyMessage const* rvBsm);
+    void injectGhostAttack(veins::BasicSafetyMessage const* bsm);
     void injectAttack(veins::BasicSafetyMessage* bsm);
+    void setUniqueGhostAddress(std::string const& key, veins::BasicSafetyMessage* ghostBsm);
+    void setGhostMsgCount(std::string const& key, veins::BasicSafetyMessage* ghostBsm);
 
 private:
     vasp::logging::TraceManager* traceManager_;
     veins::BaseWorldUtility* world_;
+    vasp::connection::Manager* connManager_;
 
     std::string resultDir_;
     std::string simRunID_;
@@ -93,6 +97,7 @@ private:
     // attack related
     int attackType_;
     std::shared_ptr<vasp::attack::Interface> attack_{nullptr};
+    std::shared_ptr<vasp::attack::Interface> ghostAttack_{nullptr};
     int nDosMessages_;
     double sporadicInsertionRate_;
     double maliciousProbability_;
@@ -114,6 +119,11 @@ private:
     double curYawRate_{-1.0};
     simtime_t lastUpdate_{-1.0};
     double lastAngleRad_{-1.0};
+
+    // ghost vehicle related
+    std::map<std::string, int> ghostMsgCountMap_;
+    std::map<std::string, long> ghostRvIdMap_;
+    double ghostVehicleDistance_{0.0};
 };
 } // namespace driver
 } // namespace vasp

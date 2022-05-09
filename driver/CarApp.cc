@@ -40,6 +40,8 @@
 #include <vasp/attack/Type.h>
 #include <vasp/attack/dimension/Type.h>
 #include <vasp/attack/heading/Type.h>
+// ghost vehicle based attacks
+#include <vasp/attack/mobility/CommRangeBraking.h>
 // self telemetry based attacks
 #include <vasp/attack/acceleration/Constant.h>
 #include <vasp/attack/acceleration/ConstantOffset.h>
@@ -101,7 +103,10 @@ void CarApp::initialize(int stage)
 
     if (stage == 1) {
         world_ = veins::FindModule<veins::BaseWorldUtility*>::findGlobalModule();
+        connManager_ = veins::FindModule<connection::Manager*>::findGlobalModule();
         traceManager_ = veins::FindModule<logging::TraceManager*>::findGlobalModule();
+
+        ghostVehicleDistance_ = connManager_->getInterfDist();
 
         // Load MAP
         std::ifstream mapFileStream{mapFile_};
@@ -584,8 +589,69 @@ void CarApp::onBSM(veins::DemoSafetyMessage* dsm)
     }
 
     simtime_t const rvBsmReceiveTime{simTime()};
+
+    if (isMalicious_) {
+        // if a BSM is a ghost BSM then don't attack
+        if (strcmp("ghost", rvBsm->getData()) == 0) {
+            return;
+        }
+
+        return;
+    }
+
     executeV2XApplications(rvBsm);
     writeTrace(rvBsm, rvBsmReceiveTime);
+}
+
+void CarApp::setUniqueGhostAddress(std::string const& key, veins::BasicSafetyMessage* ghostBsm)
+{
+    // set random, trackable and possibly unique ID for ghost
+    if (ghostRvIdMap_.find(key) == ghostRvIdMap_.end()) {
+        ghostRvIdMap_[key] = intrand(INT_MAX);
+    }
+    ghostBsm->setAddress(ghostRvIdMap_[key]);
+}
+
+void CarApp::setGhostMsgCount(std::string const& key, veins::BasicSafetyMessage* ghostBsm)
+{
+    // track message count per remote vehicle
+    if (ghostMsgCountMap_.find(key) == ghostMsgCountMap_.end()) {
+        ghostMsgCountMap_[key] = 0;
+    }
+    else {
+        ghostMsgCountMap_[key] %= 128; // message count should not go beyond 127
+    }
+    ghostBsm->setMsgCount(ghostMsgCountMap_[key]);
+    ghostMsgCountMap_[key]++;
+}
+
+void CarApp::injectGhostAttack(veins::BasicSafetyMessage const* rvBsm)
+{
+    using namespace vasp::attack;
+
+    auto ghostBsm = new veins::BasicSafetyMessage();
+    populateWSM(ghostBsm); // important to use this function so that receivers accept attack BSMs.
+    ghostBsm->setRecipientId(rvBsm->getAddress());
+
+    auto const mapKey{std::to_string(myId) + "-" + std::to_string(rvBsm->getAddress())};
+    setUniqueGhostAddress(mapKey, ghostBsm);
+    setGhostMsgCount(mapKey, ghostBsm);
+
+    switch (attackType_) {
+    case attack::kAttackCommRangeBraking: {
+        ghostAttack_ = std::make_unique<mobility::CommRangeBraking>(rvBsm, ghostVehicleDistance_, curSpeed);
+        break;
+    }
+    default: {
+        delete ghostBsm;
+        ghostBsm = nullptr;
+    }
+    }
+
+    if (ghostAttack_) {
+        ghostAttack_->attack(ghostBsm);
+        sendDown(ghostBsm);
+    }
 }
 
 void CarApp::writeTrace(veins::BasicSafetyMessage const* rvBsm, simtime_t_cref rvBsmReceiveTime)
