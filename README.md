@@ -19,7 +19,7 @@ This repository provides a framework to simulate attacks on V2X networks. It use
     * Install by following their [installation guide](https://doc.omnetpp.org/omnetpp/InstallGuide.pdf).
 3. Install [SUMO](https://www.eclipse.org/sumo/) (version 1.8.0) by following their [installation guide](https://sumo.dlr.de/docs/Installing/index.html).
 4. Clone [VEINS](https://veins.car2x.org/) (version 5.2): `git clone --branch veins-5.2 https://github.com/sommer/veins.git`
-5. Add this repo as submodule under `<path/to/veins>/src/`: `cd veins && git submodule add https://github.qualcomm.com/cavalry/vasp src/vasp`
+5. Add this repo as submodule under `<path/to/veins>/src/`: `cd veins && git submodule add https://github.com/quic/vasp src/vasp`
 
 # Build
 
