@@ -44,5 +44,18 @@ This repository provides a framework to simulate attacks on V2X networks. It use
 2. [Know your trace file](docs/trace_file_column_explanation.md)
 3. [Implementing your own attack](docs/implement_attack.md)
 
+# Citation
+
+If you are using our VASP framework or codes for your development, please cite the following paper:
+```bibtex
+@inproceedings{vasp2023,
+  title={VASP: V2X Application Spoofing Platform},
+  author={Ansari, Mohammad Raashid and Petit, Jonathan and Monteuuis, Jean-Philippe and Chen, Cong},
+  booktitle={Proceedings Inaugural International Symposium on Vehicle Security & Privacy, ndss-symposium},
+  url={https://doi.org/10.14722/vehiclesec.2023.23071},
+  year={2023}
+  }
+```
+
 # License
 MIT
